@@ -1,0 +1,66 @@
+package br.ulbra.DAO;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
+public class ConnectionFactory {
+
+    private static final String DRIVER = "com.mysql.jdbc.Driver";
+    private static final String URL = "jdbc:mysql://localhost:3306/bdlogin";
+    private static final String User = "root";
+    private static final String Pass = "";
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName(DRIVER);
+            return DriverManager.getConnection(URL, User, Pass);
+        } catch (ClassNotFoundException | SQLException ex) {
+            JOptionPane.showConfirmDialog(null, "Erro: " + ex.getMessage());
+            return null;
+
+        }
+
+    }
+
+    public static void closeConnection(Connection con) {
+        try {
+            if (con != null) {
+                con.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnectionFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void closeConnection(Connection con, PreparedStatement stnt) {
+        closeConnection(con);
+        try {
+            if (stnt != null) {
+                stnt.close();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void closeConnection(Connection con, PreparedStatement stmt,
+            ResultSet rs) {
+        closeConnection(con, stmt);
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnectionFactory.class.getName()).log(Level.SEVERE,
+                    null, ex);
+        }
+    }
+    
+}
